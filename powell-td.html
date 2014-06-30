@@ -1,0 +1,185 @@
+<html>
+<head>
+<link href='http://fonts.googleapis.com/css?family=Quicksand:400,700' rel='stylesheet' type='text/css'>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+	<title>BattleShip</title>
+</head>
+<body>
+
+<script type="text/javascript">
+
+/*
+Did not finish
+
+Alright so the strategy is is first choose a randm spot until you hit. 
+once you hit, you know for a fact that the ship can be layed verticlly or horizontally.
+Try out horizontally first.
+first left then right. If left, keep going left until you sink or miss
+if not sunk, try right nad keep going right until you sink or miss.
+
+if nothing was sunk this way go vertical until you sink something
+
+if all  failed and ypu sunk nothing, its one of the two corner cases and you have to try again.
+
+
+
+
+*/
+
+/*
+shot 
+{
+  "board_id": "test_board_1",
+  "is_hit": false,
+  "is_finished": false,
+  "location": "A1",
+  "sunk": null
+}
+
+*/
+var alphabetamp= {
+
+
+	1:"A",
+	2:"B",
+	3:"C",
+	4:"D",
+	5:"E",
+	6:"F",
+	7:"G",
+	8:"H",
+	9:"I",
+	10:"J"
+}
+	
+var battle=  function(board){
+var numSunk = 0;
+//in the very beginning you want to keep choosing random shots until you hit one 
+
+var hit = false;
+var url;
+var arrayrow; 
+
+//This gets the the for the the url
+var arraycol; 
+var shot ; 
+var ship = {};
+
+while(!hit){
+	arrayrow= Math.round(Math.random()*10);
+	arraycol=alphabetamp( Math.round(Math.random()*10));
+
+	url = "https://student.people.co/api/challenge/battleship/cde87a942133/boards/test_board_1/"+arraycol+arrayrow;
+	var reponse= shot(url);
+	if(reponse.is_hit){
+			//record the array id 
+			shot = reponse;
+			ship ={"hit":[reponse.location], "sunk":reponse.sunk}; 
+			hit =true;
+		}
+
+//end while 
+}
+
+//once you hit 
+//heres the strategy if its a corner try to see test ouut the adjacent squares 
+//once you are done sinking it, start over
+
+while ( ship.sunk==null){
+
+	//ok you can either go vertically or  horizontally 
+	//lets try it out 
+
+	//if its not  a corner do this 
+
+	//horizontally
+
+	//var cont= true;
+	var col=1;
+	var col2=1;
+	var testShot = arraycol+(arrayrow+col);
+	var testShot2= arraycol+(arrayrow-col2);
+	url = "https://student.people.co/api/challenge/battleship/cde87a942133/boards/test_board_1/"+testShot;
+
+	var reponse= shot(url);
+	
+//if hit it or any  going horizontally  finish it off or keep going until you miss
+		if(reponse.is_hit){
+			ship.hit= (shit.hit).push(reponse.location);
+			if( reponse.sunk==null){
+				//then you are still need to be firing
+				//keep going right until either its sunk or you miss 
+				var hit = true;
+
+
+				while(ship.sunk==null || hit!=true){
+					col++;
+					testShot = arraycol+ (arrayrow+col);
+					url = "https://student.people.co/api/challenge/battleship/cde87a942133/boards/test_board_1/"+testShot;
+					reponse= shot(url);
+					//if its false then go right 
+					if( !reponse.is_hit){
+						hit =false;
+						
+
+					}
+
+
+					//if you hit it again 
+					//do the while loop again
+					if(reponse.is_hit){
+						hit=true;
+						(ship.hit).push(reponse.location);
+						ship.sunk=reponse.sunk;
+						
+					}			
+				
+				}//end of while 
+
+				//now you need to see if its null in order ot see if you need to go left
+
+				if( ship.sunk!=null){
+					//you sunk a ship
+					numSunk++;
+					break;
+				}
+				if(hit ==false){
+					//go in the other direction
+
+				}
+
+
+
+
+
+			
+			}
+
+		}
+
+
+		//now if its not sunk or you missed horizonatally go vertically until you sink.
+		//start this process until the game is finished 
+
+
+
+
+}
+
+
+
+var shot = function (url){
+	$.post(url, function(reponse){
+
+		return reponse;
+	});
+
+
+
+}
+
+
+</script>
+
+</body>
+</html>
